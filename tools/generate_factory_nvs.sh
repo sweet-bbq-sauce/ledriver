@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-OUT_FILE="components/app_config/factory_nvs.csv"
+OUT_FILE="components/ledriver_app_config/factory_nvs.csv"
 
 : "${LEDRIVER_WIFI_SSID:?Missing LEDRIVER_WIFI_SSID}"
 : "${LEDRIVER_WIFI_PASSWORD:?Missing LEDRIVER_WIFI_PASSWORD}"

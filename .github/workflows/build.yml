@@ -8,6 +8,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      LEDRIVER_WIFI_SSID: ci-dummy-ssid
+      LEDRIVER_WIFI_PASSWORD: ci-dummy-password
+      LEDRIVER_UPDATE_BASE_URL: https://example.com/ci-dummy-firmware/
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,6 +28,10 @@ jobs:
         uses: espressif/install-esp-idf-action@v1
         with:
           version: v6.0.1
+
+      - name: Generate factory NVS
+        run: |
+          ./tools/generate_factory_nvs.sh
 
       - name: Build firmware
         run: |

@@ -1,3 +1,5 @@
+#include <app_config.h>
+
 #include <dirent.h>
 #include <esp_log.h>
 #include <esp_spiffs.h>
@@ -46,4 +48,20 @@ void app_main(void) {
     ESP_LOGI(TAG, "SPIFFS total: %d, used: %d", total, used);
 
     list_www_files();
+
+    esp_err_t err = ledriver_app_config_init();
+    if (err == ESP_OK) {
+        ledriver_app_config_t config;
+        err = ledriver_app_config_load(&config);
+        if (err == ESP_OK) {
+            ESP_LOGI(TAG, "Loaded config:");
+            ESP_LOGI(TAG, "  WiFi SSID: %s", config.wifi_ssid);
+            ESP_LOGI(TAG, "  Update Base URL: %s", config.update_base_url);
+        } else {
+            ESP_LOGE(TAG, "Failed to load config: %s", esp_err_to_name(err));
+        }
+    } else {
+        ESP_LOGE(TAG, "Failed to initialize config: %s", esp_err_to_name(err));
+        return;
+    }
 }

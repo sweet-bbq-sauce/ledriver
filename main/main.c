@@ -1,4 +1,5 @@
-#include <app_config.h>
+#include <ledriver_app_config.h>
+#include <ledriver_wifi.h>
 
 #include <dirent.h>
 #include <esp_log.h>
@@ -57,6 +58,19 @@ void app_main(void) {
             ESP_LOGI(TAG, "Loaded config:");
             ESP_LOGI(TAG, "  WiFi SSID: %s", config.wifi_ssid);
             ESP_LOGI(TAG, "  Update Base URL: %s", config.update_base_url);
+
+            const ledriver_wifi_config_t wifi_config = {
+                .ssid = config.wifi_ssid,
+                .password = config.wifi_password,
+                .max_retries = 5,
+                .connect_timeout_ms = 10000
+            };
+
+            err = ledriver_wifi_start(&wifi_config);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Failed to start WiFi: %s", esp_err_to_name(err));
+            }
+
         } else {
             ESP_LOGE(TAG, "Failed to load config: %s", esp_err_to_name(err));
         }

@@ -7,5 +7,6 @@ idf_component_register(
 
     REQUIRES
         spiffs
-        app_config
+        ledriver_app_config
+        ledriver_wifi
 )

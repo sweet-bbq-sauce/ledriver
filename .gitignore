@@ -7,3 +7,5 @@ sdkconfig
 sdkconfig.old
 
 *.env
+
+managed_components/

@@ -46,7 +46,8 @@ add_custom_target(webpanel_build
     DEPENDS "${WEBPANEL_BUILD_STAMP}"
 )
 
-spiffs_create_partition_image(webpanel "${WEBPANEL_DIST_DIR}"
+fatfs_create_rawflash_image(webpanel "${WEBPANEL_DIST_DIR}"
     FLASH_IN_PROJECT
-    DEPENDS webpanel_build
 )
+
+add_dependencies(fatfs_webpanel_bin webpanel_build)

@@ -2,20 +2,21 @@
 #include <sys/stat.h>
 
 #include <esp_log.h>
-#include <esp_spiffs.h>
+#include <esp_vfs_fat.h>
 
 #include <ledriver_app_config.h>
 #include <ledriver_device_info.h>
 #include <ledriver_wifi.h>
 
 static const char *TAG = "webpanel";
-static const char *SPIFFS_PARTITION_LABEL = "webpanel";
-static const char *SPIFFS_BASE_PATH = "/webpanel";
+static const char *FATFS_PARTITION_LABEL = "webpanel";
+static const char *FATFS_BASE_PATH = "/webpanel";
+static const char *WEBPANEL_BASE_PATH = "/webpanel/public";
 
 static void list_www_files(void) {
-    DIR *dir = opendir(SPIFFS_BASE_PATH);
+    DIR *dir = opendir(WEBPANEL_BASE_PATH);
     if (!dir) {
-        ESP_LOGE(TAG, "Failed to open %s", SPIFFS_BASE_PATH);
+        ESP_LOGE(TAG, "Failed to open %s", WEBPANEL_BASE_PATH);
         return;
     }
 
@@ -24,7 +25,7 @@ static void list_www_files(void) {
         char path[512];
         struct stat st;
 
-        snprintf(path, sizeof(path), "%s/%s", SPIFFS_BASE_PATH, entry->d_name);
+        snprintf(path, sizeof(path), "%s/%s", WEBPANEL_BASE_PATH, entry->d_name);
 
         if (stat(path, &st) == 0) {
             ESP_LOGI(TAG, "%s (%ld bytes)", path, (long)st.st_size);
@@ -37,21 +38,23 @@ static void list_www_files(void) {
 }
 
 void app_main(void) {
-    const esp_vfs_spiffs_conf_t conf = {.base_path = SPIFFS_BASE_PATH,
-                                        .partition_label = SPIFFS_PARTITION_LABEL,
-                                        .max_files = 8,
-                                        .format_if_mount_failed = false};
+    const esp_vfs_fat_mount_config_t mount_config = {
+        .format_if_mount_failed = false,
+        .max_files = 8,
+        .allocation_unit_size = 0,
+    };
 
-    ESP_ERROR_CHECK(esp_vfs_spiffs_register(&conf));
+    ESP_ERROR_CHECK(
+        esp_vfs_fat_spiflash_mount_ro(FATFS_BASE_PATH, FATFS_PARTITION_LABEL, &mount_config));
 
     ESP_LOGI(TAG, "Hardware version: %s", LEDRIVER_HARDWARE_VERSION);
     ESP_LOGI(TAG, "Firmware build number: %d", LEDRIVER_FIRMWARE_BUILD_NUMBER);
 
-    size_t total = 0;
+    /*size_t total = 0;
     size_t used = 0;
     ESP_ERROR_CHECK(esp_spiffs_info(SPIFFS_PARTITION_LABEL, &total, &used));
 
-    ESP_LOGI(TAG, "SPIFFS total: %d, used: %d", total, used);
+    ESP_LOGI(TAG, "SPIFFS total: %d, used: %d", total, used);*/
 
     list_www_files();
 

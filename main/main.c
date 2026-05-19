@@ -4,9 +4,9 @@
 #include <esp_log.h>
 #include <esp_vfs_fat.h>
 
-#include <ledriver_app_config.h>
-#include <ledriver_device_info.h>
-#include <ledriver_wifi.h>
+#include <ledriver/app_config.h>
+#include <ledriver/device_info.h>
+#include <ledriver/wifi.h>
 
 static const char *TAG = "webpanel";
 static const char *FATFS_PARTITION_LABEL = "webpanel";

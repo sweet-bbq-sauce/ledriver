@@ -1,0 +1,4 @@
+#pragma once
+
+#define LEDRIVER_HARDWARE_VERSION      "v1"
+#define LEDRIVER_FIRMWARE_BUILD_NUMBER 1

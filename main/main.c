@@ -6,11 +6,10 @@
 
 #include <ledriver/app_config.h>
 #include <ledriver/device_info.h>
+#include <ledriver/panel_partition.h>
 #include <ledriver/wifi.h>
 
-static const char *TAG = "webpanel";
-static const char *FATFS_PARTITION_LABEL = "webpanel";
-static const char *FATFS_BASE_PATH = "/webpanel";
+static const char *TAG = "main";
 static const char *WEBPANEL_BASE_PATH = "/webpanel/public";
 
 static void list_www_files(void) {
@@ -28,9 +27,9 @@ static void list_www_files(void) {
         snprintf(path, sizeof(path), "%s/%s", WEBPANEL_BASE_PATH, entry->d_name);
 
         if (stat(path, &st) == 0) {
-            ESP_LOGI(TAG, "%s (%ld bytes)", path, (long)st.st_size);
+            ESP_LOGI(TAG, "  %s (%ld bytes)", path, (long)st.st_size);
         } else {
-            ESP_LOGI(TAG, "%s", path);
+            ESP_LOGI(TAG, "  %s", path);
         }
     }
 
@@ -38,27 +37,26 @@ static void list_www_files(void) {
 }
 
 void app_main(void) {
-    const esp_vfs_fat_mount_config_t mount_config = {
-        .format_if_mount_failed = false,
-        .max_files = 8,
-        .allocation_unit_size = 0,
-    };
-
-    ESP_ERROR_CHECK(
-        esp_vfs_fat_spiflash_mount_ro(FATFS_BASE_PATH, FATFS_PARTITION_LABEL, &mount_config));
+    ESP_ERROR_CHECK(ledriver_panel_partition_mount());
 
     ESP_LOGI(TAG, "Hardware version: %s", LEDRIVER_HARDWARE_VERSION);
     ESP_LOGI(TAG, "Firmware build number: %d", LEDRIVER_FIRMWARE_BUILD_NUMBER);
 
-    /*size_t total = 0;
-    size_t used = 0;
-    ESP_ERROR_CHECK(esp_spiffs_info(SPIFFS_PARTITION_LABEL, &total, &used));
-
-    ESP_LOGI(TAG, "SPIFFS total: %d, used: %d", total, used);*/
+    ledriver_panel_partition_info_t partition_info;
+    esp_err_t err = ledriver_panel_partition_get_info(&partition_info);
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG,
+                 "Panel partition total size: %llu bytes, used: %llu bytes (%d%%)",
+                 partition_info.total_bytes,
+                 partition_info.used_bytes,
+                 partition_info.percent_used);
+    } else {
+        ESP_LOGE(TAG, "Failed to get panel partition info: %s", esp_err_to_name(err));
+    }
 
     list_www_files();
 
-    esp_err_t err = ledriver_app_config_init();
+    err = ledriver_app_config_init();
     if (err == ESP_OK) {
         ledriver_app_config_t config;
         err = ledriver_app_config_load(&config);

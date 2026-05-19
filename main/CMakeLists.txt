@@ -9,4 +9,5 @@ idf_component_register(
         spiffs
         ledriver_app_config
         ledriver_wifi
+        ledriver_device
 )

@@ -1,0 +1,7 @@
+{
+    "hardware_version": "v1",
+    "build_number": {
+        "firmware": 1,
+        "webpanel": 1
+    }
+}

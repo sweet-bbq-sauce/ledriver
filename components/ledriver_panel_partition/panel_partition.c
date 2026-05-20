@@ -8,7 +8,6 @@
 static bool is_mounted = false;
 
 #define LEDRIVER_PANEL_PARTITION_LABEL "webpanel"
-#define LEDRIVER_PANEL_BASE_PATH       "/webpanel"
 
 esp_err_t ledriver_panel_partition_mount(void) {
     if (is_mounted) {
@@ -21,7 +20,7 @@ esp_err_t ledriver_panel_partition_mount(void) {
         .allocation_unit_size = 0,
     };
 
-    esp_err_t err = esp_vfs_fat_spiflash_mount_ro(LEDRIVER_PANEL_BASE_PATH,
+    esp_err_t err = esp_vfs_fat_spiflash_mount_ro(LEDRIVER_WEBPANEL_MOUNT_POINT,
                                                   LEDRIVER_PANEL_PARTITION_LABEL,
                                                   &mount_config);
     if (err != ESP_OK) {
@@ -37,8 +36,8 @@ esp_err_t ledriver_panel_partition_unmount(void) {
         return ESP_ERR_INVALID_STATE;
     }
 
-    esp_err_t err =
-        esp_vfs_fat_spiflash_unmount_ro(LEDRIVER_PANEL_BASE_PATH, LEDRIVER_PANEL_PARTITION_LABEL);
+    esp_err_t err = esp_vfs_fat_spiflash_unmount_ro(LEDRIVER_WEBPANEL_MOUNT_POINT,
+                                                    LEDRIVER_PANEL_PARTITION_LABEL);
     if (err != ESP_OK) {
         return err;
     }
@@ -57,7 +56,7 @@ esp_err_t ledriver_panel_partition_get_info(ledriver_panel_partition_info_t *inf
     }
 
     uint64_t total_bytes, free_bytes;
-    esp_err_t err = esp_vfs_fat_info(LEDRIVER_PANEL_BASE_PATH, &total_bytes, &free_bytes);
+    esp_err_t err = esp_vfs_fat_info(LEDRIVER_WEBPANEL_MOUNT_POINT, &total_bytes, &free_bytes);
     if (err != ESP_OK) {
         return err;
     }

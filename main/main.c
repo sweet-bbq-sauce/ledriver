@@ -6,6 +6,7 @@
 
 #include <ledriver/app_config.h>
 #include <ledriver/device_info.h>
+#include <ledriver/device_version.h>
 #include <ledriver/panel_partition.h>
 #include <ledriver/wifi.h>
 
@@ -39,11 +40,18 @@ static void list_www_files(void) {
 void app_main(void) {
     ESP_ERROR_CHECK(ledriver_panel_partition_mount());
 
-    ESP_LOGI(TAG, "Hardware version: %s", LEDRIVER_HARDWARE_VERSION);
-    ESP_LOGI(TAG, "Firmware build number: %d", LEDRIVER_FIRMWARE_BUILD_NUMBER);
+    ledriver_device_version_t device_version;
+    esp_err_t err = ledriver_device_version_get(&device_version);
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "Hardware version: %s", device_version.hardware_version);
+        ESP_LOGI(TAG, "Firmware build number: %d", device_version.firmware_build_number);
+        ESP_LOGI(TAG, "Webpanel build number: %d", device_version.webpanel_build_number);
+    } else {
+        ESP_LOGE(TAG, "Failed to get device version: %s", esp_err_to_name(err));
+    }
 
     ledriver_panel_partition_info_t partition_info;
-    esp_err_t err = ledriver_panel_partition_get_info(&partition_info);
+    err = ledriver_panel_partition_get_info(&partition_info);
     if (err == ESP_OK) {
         ESP_LOGI(TAG,
                  "Panel partition total size: %llu bytes, used: %llu bytes (%d%%)",

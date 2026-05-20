@@ -5,6 +5,8 @@
 
 #include <esp_err.h>
 
+#define LEDRIVER_WEBPANEL_MOUNT_POINT "/webpanel"
+
 typedef struct {
     uint64_t total_bytes;
     uint64_t used_bytes;

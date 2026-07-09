@@ -1,6 +1,8 @@
 #include <driver/ledc.h>
 #include <esp_err.h>
 
+#include <ledriver/led.h>
+
 #define RGB_LEDC_MODE    LEDC_LOW_SPEED_MODE
 #define RGB_LEDC_TIMER   LEDC_TIMER_0
 #define RGB_LEDC_FREQ_HZ 1000

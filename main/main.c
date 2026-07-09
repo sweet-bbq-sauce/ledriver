@@ -92,6 +92,16 @@ void app_main(void) {
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Failed to initialize LED driver: %s", esp_err_to_name(err));
         }
+
+        err = ledriver_led_set_power(true);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to set LED power: %s", esp_err_to_name(err));
+        }
+
+        err = ledriver_led_set_color(&(ledriver_led_color_t){.r = 2000, .g = 1000, .b = 500});
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to set LED color: %s", esp_err_to_name(err));
+        }
     } else {
         ESP_LOGE(TAG, "Failed to initialize config: %s", esp_err_to_name(err));
         return;

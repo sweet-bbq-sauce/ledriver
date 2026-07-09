@@ -12,4 +12,5 @@ idf_component_register(
         ledriver_wifi
         ledriver_device
         ledriver_panel_partition
+        ledriver_led
 )

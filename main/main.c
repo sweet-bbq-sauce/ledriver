@@ -7,6 +7,7 @@
 #include <ledriver/app_config.h>
 #include <ledriver/device_info.h>
 #include <ledriver/device_version.h>
+#include <ledriver/led.h>
 #include <ledriver/panel_partition.h>
 #include <ledriver/wifi.h>
 
@@ -85,6 +86,11 @@ void app_main(void) {
 
         } else {
             ESP_LOGE(TAG, "Failed to load config: %s", esp_err_to_name(err));
+        }
+
+        err = ledriver_led_init(25, 26, 27);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to initialize LED driver: %s", esp_err_to_name(err));
         }
     } else {
         ESP_LOGE(TAG, "Failed to initialize config: %s", esp_err_to_name(err));

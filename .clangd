@@ -1,17 +1,8 @@
 CompileFlags:
-  CompilationDatabase: /home/lol/ledriver/build
-  Compiler: /usr/bin/clang
   Remove:
-    - "--target=*"
-    - "-target"
-    - "-mlongcalls"
-    - "-mtext-section-literals"
-    - "-fstrict-volatile-bitfields"
-    - "-fno-shrink-wrap"
-    - "-fno-tree-switch-conversion"
-    - "-fzero-init-padding-bits=*"
-    - "-fno-malloc-dce"
-    - "-specs=*"
-  Add:
-    - "--target=x86_64-pc-linux-gnu"
-    
+    - -fno-shrink-wrap
+    - -fstrict-volatile-bitfields
+    - -fno-tree-switch-conversion
+    - -fzero-init-padding-bits=*
+    - -fno-malloc-dce
+    - -Wno-old-style-declaration

@@ -1,0 +1,8 @@
+{
+  "clangd.path": "${env:HOME}/.espressif/tools/esp-clang/esp-20.1.1_20250829/esp-clang/bin/clangd",
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}/build",
+    "--query-driver=${env:HOME}/.espressif/tools/**/bin/*gcc,${env:HOME}/.espressif/tools/**/bin/*g++"
+  ],
+  "C_Cpp.intelliSenseEngine": "disabled"
+}

@@ -3,12 +3,15 @@
 
 #include <esp_log.h>
 #include <esp_vfs_fat.h>
+#include <lwip/inet.h>
+#include <lwip/sockets.h>
 
 #include <ledriver/app_config.h>
 #include <ledriver/device_info.h>
 #include <ledriver/device_version.h>
 #include <ledriver/led.h>
 #include <ledriver/panel_partition.h>
+#include <ledriver/udp_server.h>
 #include <ledriver/wifi.h>
 
 static const char *TAG = "main";
@@ -101,6 +104,17 @@ void app_main(void) {
         err = ledriver_led_set_color(&(ledriver_led_color_t){.r = 2000, .g = 1000, .b = 500});
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Failed to set LED color: %s", esp_err_to_name(err));
+        }
+
+        struct sockaddr_storage addr = {};
+        struct sockaddr_in *addr_in = (struct sockaddr_in *)&addr;
+        addr_in->sin_family = AF_INET;
+        addr_in->sin_port = htons(12345);
+        addr_in->sin_addr.s_addr = INADDR_ANY;
+
+        err = ledriver_udp_server_listen(&addr);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to initialize UDP server: %s", esp_err_to_name(err));
         }
     } else {
         ESP_LOGE(TAG, "Failed to initialize config: %s", esp_err_to_name(err));

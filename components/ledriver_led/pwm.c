@@ -6,6 +6,10 @@
 esp_err_t ledriver_pwm_set(const ledriver_led_color_t *color) {
     esp_err_t err;
 
+    if (!color) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
     // RED channel
     err = ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, color->r);
     if (err != ESP_OK) {

@@ -1,0 +1,153 @@
+PACKET STRUCTURE:
++--------+--------+--------+--------+--------+--------+--------+
+| Offset | Size   | Field                                      |
++--------+--------+--------+--------+--------+--------+--------+
+| 0      | 4 B    | Magic (0x4C 0x45 0x44 0x52 = "LEDR")       |
+| 4      | 1 B    | Version (0x00 - dev version)               |
+| 5      | 1 B    | Command                                    |
+| 6      | 2 B    | Flags                                      |
+| 8      | N B    | Payload or nothing                         |
+| 8 + N  | 2 B    | CRC-16/CCITT-FALSE of header and payload   |
++--------+--------+--------+--------+--------+--------+--------+
+
+COMMANDS:
+Opcode  Name    Description
+---------------------------------------------------------------------------------
+0x00    NONE    Reserved.
+0x01    PING    Send ping and wait for pong.
+0x02    PONG    PING's ACK.
+0x03    SHOW    Get current LED state: color and power.
+0x04    UPDATE  Update LED color.
+0x05    POWER   Update LED power.
+
+FLAGS:
+Bit     Used in             Description
+-------------------------------------------------------
+0       UPDATE, POWER       Client wants ACK.
+1-15                        Reserved, must be 0.
+
+COLOR:
+Color channel is UINT16 in big-endian.
++--------+--------+--------+--------+
+| Offset | Size   | Channel         |
++--------+--------+--------+--------+
+| 0      | 2 B    | Red             |
+| 2      | 2 B    | Green           |
+| 4      | 2 B    | Blue            |
++--------+--------+--------+--------+
+6 bytes
+
+POWER:
+Power is 1-byte value:
+    0x00    - OFF
+    0x01    - ON
+
+ACK RESULT:
+Result is 1-byte value:
+    0x00    - OK
+    Other   - Error
+
+PING REQUEST:
++--------+--------+--------+--------+--------+--------+--------+
+| Offset | Size   | Field                                      |
++--------+--------+--------+--------+--------+--------+--------+
+| 0      | 4 B    | Magic                                      |
+| 4      | 1 B    | Version (0x00 - dev version)               |
+| 5      | 1 B    | Command (0x01 - PING)                      |
+| 6      | 2 B    | Flags                                      |
+| 8      | 2 B    | CRC-16/CCITT-FALSE                         |
++--------+--------+--------+--------+--------+--------+--------+
+10 bytes
+
+PONG RESPONSE:
++--------+--------+--------+--------+--------+--------+--------+
+| Offset | Size   | Field                                      |
++--------+--------+--------+--------+--------+--------+--------+
+| 0      | 4 B    | Magic                                      |
+| 4      | 1 B    | Version (0x00 - dev version)               |
+| 5      | 1 B    | Command (0x02 - PONG)                      |
+| 6      | 2 B    | Flags                                      |
+| 8      | 2 B    | CRC-16/CCITT-FALSE                         |
++--------+--------+--------+--------+--------+--------+--------+
+10 bytes
+
+
+SHOW REQUEST:
++--------+--------+--------+--------+--------+--------+--------+
+| Offset | Size   | Field                                      |
++--------+--------+--------+--------+--------+--------+--------+
+| 0      | 4 B    | Magic                                      |
+| 4      | 1 B    | Version (0x00 - dev version)               |
+| 5      | 1 B    | Command (0x03 - SHOW)                      |
+| 6      | 2 B    | Flags                                      |
+| 8      | 2 B    | CRC-16/CCITT-FALSE                         |
++--------+--------+--------+--------+--------+--------+--------+
+10 bytes
+
+SHOW RESPONSE:
++--------+--------+--------+--------+--------+--------+--------+
+| Offset | Size   | Field                                      |
++--------+--------+--------+--------+--------+--------+--------+
+| 0      | 4 B    | Magic                                      |
+| 4      | 1 B    | Version (0x00 - dev version)               |
+| 5      | 1 B    | Command (0x03 - SHOW)                      |
+| 6      | 2 B    | Flags                                      |
+| 8      | 6 B    | Color                                      |
+| 14     | 1 B    | Power                                      |
+| 15     | 2 B    | CRC-16/CCITT-FALSE                         |
++--------+--------+--------+--------+--------+--------+--------+
+17 bytes
+
+
+UPDATE REQUEST:
++--------+--------+--------+--------+--------+--------+--------+
+| Offset | Size   | Field                                      |
++--------+--------+--------+--------+--------+--------+--------+
+| 0      | 4 B    | Magic                                      |
+| 4      | 1 B    | Version (0x00 - dev version)               |
+| 5      | 1 B    | Command (0x04 - UPDATE)                    |
+| 6      | 2 B    | Flags                                      |
+| 8      | 6 B    | Color                                      |
+| 14     | 2 B    | CRC-16/CCITT-FALSE                         |
++--------+--------+--------+--------+--------+--------+--------+
+16 bytes
+
+UPDATE ACK:
++--------+--------+--------+--------+--------+--------+--------+
+| Offset | Size   | Field                                      |
++--------+--------+--------+--------+--------+--------+--------+
+| 0      | 4 B    | Magic                                      |
+| 4      | 1 B    | Version (0x00 - dev version)               |
+| 5      | 1 B    | Command (0x04 - UPDATE)                    |
+| 6      | 2 B    | Flags                                      |
+| 8      | 1 B    | ACK result                                 |
+| 9      | 2 B    | CRC-16/CCITT-FALSE                         |
++--------+--------+--------+--------+--------+--------+--------+
+11 bytes
+
+
+POWER REQUEST:
++--------+--------+--------+--------+--------+--------+--------+
+| Offset | Size   | Field                                      |
++--------+--------+--------+--------+--------+--------+--------+
+| 0      | 4 B    | Magic                                      |
+| 4      | 1 B    | Version (0x00 - dev version)               |
+| 5      | 1 B    | Command (0x05 - POWER)                     |
+| 6      | 2 B    | Flags                                      |
+| 8      | 1 B    | Power                                      |
+| 9      | 2 B    | CRC-16/CCITT-FALSE                         |
++--------+--------+--------+--------+--------+--------+--------+
+11 bytes
+
+POWER ACK:
++--------+--------+--------+--------+--------+--------+--------+
+| Offset | Size   | Field                                      |
++--------+--------+--------+--------+--------+--------+--------+
+| 0      | 4 B    | Magic                                      |
+| 4      | 1 B    | Version (0x00 - dev version)               |
+| 5      | 1 B    | Command (0x05 - POWER)                     |
+| 6      | 2 B    | Flags                                      |
+| 8      | 1 B    | ACK result                                 |
+| 9      | 2 B    | CRC-16/CCITT-FALSE                         |
++--------+--------+--------+--------+--------+--------+--------+
+11 bytes

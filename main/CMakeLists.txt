@@ -13,5 +13,4 @@ idf_component_register(
         ledriver_device
         ledriver_panel_partition
         ledriver_led
-        ledriver_udp_server
 )

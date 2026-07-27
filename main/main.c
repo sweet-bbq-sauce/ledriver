@@ -11,7 +11,6 @@
 #include <ledriver/device_version.h>
 #include <ledriver/led.h>
 #include <ledriver/panel_partition.h>
-#include <ledriver/udp_server.h>
 #include <ledriver/wifi.h>
 
 static const char *TAG = "main";
@@ -111,11 +110,6 @@ void app_main(void) {
         addr_in->sin_family = AF_INET;
         addr_in->sin_port = htons(12345);
         addr_in->sin_addr.s_addr = INADDR_ANY;
-
-        err = ledriver_udp_server_listen(&addr);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to initialize UDP server: %s", esp_err_to_name(err));
-        }
     } else {
         ESP_LOGE(TAG, "Failed to initialize config: %s", esp_err_to_name(err));
         return;

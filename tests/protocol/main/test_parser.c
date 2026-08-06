@@ -3,52 +3,62 @@
 #include <unity.h>
 
 #include <ledriver/protocol.h>
-#include <ledriver/protocol_serialize.h>
+#include <ledriver/protocol_parse.h>
 
-TEST_CASE("serializes a valid LDR header", "[parser]") {
-    const ledriver_protocol_header_t header = {
-        .version = 0x00,
-        .request_id = 0x12345678,
-        .message_type = LDR_MESSAGE_TYPE_REQUEST,
-        .return_value = LDR_RETURN_VALUE_SUCCESS,
-        .command = LDR_COMMAND_STATUS,
-    };
-
-    uint8_t output[LDR_HEADER_WIRE_SIZE];
-
-    int result = ledriver_protocol_serialize_header(&header, output, sizeof(output));
-
-    const uint8_t expected[] = {
-        0x4C,
-        0x44,
-        0x52,
+TEST_CASE("parses a valid LDR header", "[parser]") {
+    const uint8_t input[] = {
+        LDR_MAGIC_0,
+        LDR_MAGIC_1,
+        LDR_MAGIC_2,
         0x00,
         0x12,
         0x34,
         0x56,
         0x78,
-        0x00,
+        LDR_MESSAGE_CTRL_PACK(LDR_MESSAGE_TYPE_RESPONSE, LDR_RETURN_VALUE_BUSY),
         LDR_COMMAND_STATUS,
     };
+    ledriver_protocol_header_t header = {0};
 
-    TEST_ASSERT_EQUAL_INT(LDR_HEADER_WIRE_SIZE, result);
-    TEST_ASSERT_EQUAL_UINT8_ARRAY(expected, output, sizeof(expected));
+    int result = ledriver_protocol_parse_header(input, sizeof(input), &header);
+
+    TEST_ASSERT_EQUAL_INT(0, result);
+    TEST_ASSERT_EQUAL_HEX8(0x00, header.version);
+    TEST_ASSERT_EQUAL_HEX32(0x12345678, header.request_id);
+    TEST_ASSERT_EQUAL_HEX8(LDR_MESSAGE_TYPE_RESPONSE, header.message_type);
+    TEST_ASSERT_EQUAL_HEX8(LDR_RETURN_VALUE_BUSY, header.return_value);
+    TEST_ASSERT_EQUAL_HEX8(LDR_COMMAND_STATUS, header.command);
 }
 
-TEST_CASE("rejects buffer shorter than header", "[parser]") {
-    const ledriver_protocol_header_t header = {0};
-    uint8_t output[LDR_HEADER_WIRE_SIZE - 1];
+TEST_CASE("parser rejects invalid magic", "[parser]") {
+    const uint8_t input[] = {
+        0x00,
+        LDR_MAGIC_1,
+        LDR_MAGIC_2,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+    };
+    ledriver_protocol_header_t header = {0};
 
-    int result = ledriver_protocol_serialize_header(&header, output, sizeof(output));
-
-    TEST_ASSERT_EQUAL_INT(-1, result);
+    TEST_ASSERT_EQUAL_INT(-1, ledriver_protocol_parse_header(input, sizeof(input), &header));
 }
 
-TEST_CASE("rejects null arguments", "[parser]") {
-    uint8_t output[LDR_HEADER_WIRE_SIZE];
-    const ledriver_protocol_header_t header = {0};
+TEST_CASE("parser rejects buffer shorter than header", "[parser]") {
+    const uint8_t input[LDR_HEADER_WIRE_SIZE - 1] = {0};
+    ledriver_protocol_header_t header = {0};
 
-    TEST_ASSERT_EQUAL_INT(-1, ledriver_protocol_serialize_header(NULL, output, sizeof(output)));
+    TEST_ASSERT_EQUAL_INT(-1, ledriver_protocol_parse_header(input, sizeof(input), &header));
+}
 
-    TEST_ASSERT_EQUAL_INT(-1, ledriver_protocol_serialize_header(&header, NULL, sizeof(output)));
+TEST_CASE("parser rejects null arguments", "[parser]") {
+    const uint8_t input[LDR_HEADER_WIRE_SIZE] = {0};
+    ledriver_protocol_header_t header = {0};
+
+    TEST_ASSERT_EQUAL_INT(-1, ledriver_protocol_parse_header(NULL, sizeof(input), &header));
+    TEST_ASSERT_EQUAL_INT(-1, ledriver_protocol_parse_header(input, sizeof(input), NULL));
 }

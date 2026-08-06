@@ -1,8 +1,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include <ledriver/ldr.h>
-#include <ledriver/parser.h>
+#include <ledriver/protocol.h>
+#include <ledriver/protocol_serialize.h>
 
 int ledriver_ldr_serialize_header(const ledriver_ldr_header_t *header,
                                   uint8_t *buffer,

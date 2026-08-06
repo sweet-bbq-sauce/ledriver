@@ -1,10 +1,9 @@
 idf_component_register(
     SRCS
-        "udp_server.c"
-        
-    INCLUDE_DIRS
-        "include"
+        "test_parser.c"
+        "test_runner.c"
 
     PRIV_REQUIRES
+        unity
         ledriver_protocol
 )

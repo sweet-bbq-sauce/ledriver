@@ -1,10 +1,9 @@
 idf_component_register(
     SRCS
-        "udp_server.c"
+        "serialize.c"
         
     INCLUDE_DIRS
         "include"
 
     PRIV_REQUIRES
-        ledriver_protocol
 )

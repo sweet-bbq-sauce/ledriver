@@ -10,7 +10,7 @@ typedef struct {
     uint8_t message_type;
     uint8_t return_value;
     uint8_t command;
-} ledriver_ldr_header_t;
+} ledriver_protocol_header_t;
 
 // Magic number for LDR protocol: 'L', 'D', 'R'
 #define LDR_MAGIC_0 0x4Cu

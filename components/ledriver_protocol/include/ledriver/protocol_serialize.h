@@ -5,6 +5,6 @@
 
 #include <ledriver/protocol.h>
 
-int ledriver_ldr_serialize_header(const ledriver_ldr_header_t *header,
-                                  uint8_t *buffer,
-                                  size_t buffer_len);
+int ledriver_protocol_serialize_header(const ledriver_protocol_header_t *header,
+                                       uint8_t *buffer,
+                                       size_t buffer_len);

@@ -54,3 +54,32 @@ typedef struct {
 
 #define LDR_MESSAGE_CTRL_PACK(message_type, return_value) \
     ((uint8_t)((((uint8_t)(return_value) & 0x7Fu) << 1u) | ((uint8_t)(message_type) & 0x01u)))
+
+// Color structure for RGB values in big-endian format
+typedef struct {
+    uint16_t red_be;
+    uint16_t green_be;
+    uint16_t blue_be;
+} ledriver_protocol_color_t;
+
+#define LDR_COLOR_WIRE_SIZE 6
+
+typedef struct {
+    ledriver_protocol_color_t color;
+    uint8_t power;
+} ledriver_protocol_payload_status_t;
+
+#define LDR_PAYLOAD_STATUS_WIRE_SIZE (LDR_COLOR_WIRE_SIZE + 1)
+
+typedef struct {
+    ledriver_protocol_color_t color;
+    uint8_t no_ack;
+} ledriver_protocol_payload_update_t;
+
+#define LDR_PAYLOAD_UPDATE_WIRE_SIZE (LDR_COLOR_WIRE_SIZE + 1)
+
+typedef struct {
+    uint8_t power;
+} ledriver_protocol_payload_power_t;
+
+#define LDR_PAYLOAD_POWER_WIRE_SIZE 1

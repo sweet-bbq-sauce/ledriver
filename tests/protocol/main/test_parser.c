@@ -32,7 +32,7 @@ TEST_CASE("parses a valid LDR header", "[parser]") {
 
 TEST_CASE("parser rejects invalid magic", "[parser]") {
     const uint8_t input[] = {
-        0x00,
+        0x00, // Invalid byte for LDR_MAGIC_0
         LDR_MAGIC_1,
         LDR_MAGIC_2,
         0x00,

@@ -25,3 +25,61 @@ int ledriver_protocol_parse_header(const uint8_t *buffer,
 
     return 0;
 }
+
+static int parse_color(const uint8_t *buffer, size_t buffer_len, ledriver_protocol_color_t *color) {
+    if (!buffer || !color || buffer_len < 6) {
+        return -1; // Invalid arguments
+    }
+
+    color->red_be = ((uint16_t)buffer[0] << 8) | (uint16_t)buffer[1];
+    color->green_be = ((uint16_t)buffer[2] << 8) | (uint16_t)buffer[3];
+    color->blue_be = ((uint16_t)buffer[4] << 8) | (uint16_t)buffer[5];
+
+    return 0; // Success
+}
+
+int ledriver_protocol_parse_payload_status(const uint8_t *buffer,
+                                           size_t buffer_len,
+                                           ledriver_protocol_payload_status_t *payload) {
+    if (!buffer || !payload || buffer_len < sizeof(ledriver_protocol_payload_status_t)) {
+        return -1;
+    }
+
+    int color_result = parse_color(buffer, buffer_len, &payload->color);
+    if (color_result < 0) {
+        return -1; // Error parsing color
+    }
+
+    payload->power = buffer[6];
+
+    return 0;
+}
+
+int ledriver_protocol_parse_payload_update(const uint8_t *buffer,
+                                           size_t buffer_len,
+                                           ledriver_protocol_payload_update_t *payload) {
+    if (!buffer || !payload || buffer_len < sizeof(ledriver_protocol_payload_update_t)) {
+        return -1;
+    }
+
+    int color_result = parse_color(buffer, buffer_len, &payload->color);
+    if (color_result < 0) {
+        return -1; // Error parsing color
+    }
+
+    payload->no_ack = buffer[6];
+
+    return 0;
+}
+
+int ledriver_protocol_parse_payload_power(const uint8_t *buffer,
+                                          size_t buffer_len,
+                                          ledriver_protocol_payload_power_t *payload) {
+    if (!buffer || !payload || buffer_len < sizeof(ledriver_protocol_payload_power_t)) {
+        return -1;
+    }
+
+    payload->power = buffer[0];
+
+    return 0;
+}

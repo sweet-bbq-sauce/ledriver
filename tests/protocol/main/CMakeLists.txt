@@ -7,4 +7,6 @@ idf_component_register(
     PRIV_REQUIRES
         unity
         ledriver_protocol
+
+    WHOLE_ARCHIVE
 )

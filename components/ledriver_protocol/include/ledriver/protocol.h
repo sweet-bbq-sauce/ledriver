@@ -7,7 +7,8 @@
 typedef struct {
     uint8_t version;
     uint32_t request_id;
-    uint8_t message_ctrl;
+    uint8_t message_type;
+    uint8_t return_value;
     uint8_t command;
 } ledriver_ldr_header_t;
 

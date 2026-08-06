@@ -19,7 +19,7 @@ int ledriver_ldr_serialize_header(const ledriver_ldr_header_t *header,
     buffer[5] = (uint8_t)((header->request_id >> 16) & 0xFF);
     buffer[6] = (uint8_t)((header->request_id >> 8) & 0xFF);
     buffer[7] = (uint8_t)(header->request_id & 0xFF);
-    buffer[8] = header->message_ctrl;
+    buffer[8] = LDR_MESSAGE_CTRL_PACK(header->message_type, header->return_value);
     buffer[9] = header->command;
 
     return LDR_HEADER_WIRE_SIZE;

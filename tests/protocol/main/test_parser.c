@@ -9,7 +9,8 @@ TEST_CASE("serializes a valid LDR header", "[parser]") {
     const ledriver_ldr_header_t header = {
         .version = 0x00,
         .request_id = 0x12345678,
-        .message_ctrl = LDR_MESSAGE_CTRL_PACK(LDR_MESSAGE_TYPE_REQUEST, LDR_RETURN_VALUE_SUCCESS),
+        .message_type = LDR_MESSAGE_TYPE_REQUEST,
+        .return_value = LDR_RETURN_VALUE_SUCCESS,
         .command = LDR_COMMAND_STATUS,
     };
 
